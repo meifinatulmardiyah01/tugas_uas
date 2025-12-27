@@ -97,7 +97,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 width: 200,
                 height: 200,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -109,7 +109,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.pinkAccent.withOpacity(0.15),
+                  color: Colors.pinkAccent.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -123,7 +123,7 @@ class _HelpScreenState extends State<HelpScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -150,7 +150,7 @@ class _HelpScreenState extends State<HelpScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 20,
                           offset: const Offset(0, -10),
                         ),
@@ -170,7 +170,7 @@ class _HelpScreenState extends State<HelpScreen> {
                               children: [
                                 _buildLanguageButton('ID', '🇮🇩'),
                                 const SizedBox(width: 20),
-                                Container(height: 30, width: 1, color: Colors.grey.withOpacity(0.3)),
+                                Container(height: 30, width: 1, color: Colors.grey.withValues(alpha: 0.3)),
                                 const SizedBox(width: 20),
                                 _buildLanguageButton('EN', '🇬🇧'),
                               ],
@@ -203,8 +203,8 @@ class _HelpScreenState extends State<HelpScreen> {
 
                           // Access Restricted Alert
                           _buildCard(
-                            color: isDark ? Colors.blue[900]!.withOpacity(0.2) : const Color(0xFFEFF6FF),
-                            borderColor: Colors.blue.withOpacity(0.1),
+                            color: isDark ? Colors.blue[900]!.withValues(alpha: 0.2) : const Color(0xFFEFF6FF),
+                            borderColor: Colors.blue.withValues(alpha: 0.1),
                             child: Row(
                               children: [
                                 Container(
@@ -257,8 +257,8 @@ class _HelpScreenState extends State<HelpScreen> {
                           _buildSectionHeader(Icons.warning_rounded, text['failed_title']!, iconColor: Colors.orange),
                           const SizedBox(height: 12),
                           _buildCard(
-                            color: Colors.orange.withOpacity(0.05),
-                            borderColor: Colors.orange.withOpacity(0.1),
+                            color: Colors.orange.withValues(alpha: 0.05),
+                            borderColor: Colors.orange.withValues(alpha: 0.1),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -320,10 +320,10 @@ class _HelpScreenState extends State<HelpScreen> {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.white : Colors.grey.withOpacity(0.1),
+                color: isSelected ? Colors.white : Colors.grey.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
                 boxShadow: isSelected ? [
-                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))
                 ] : [],
                 border: Border.all(
                   color: isSelected ? const Color(0xFFc026d3) : Colors.transparent,
@@ -416,7 +416,7 @@ class _HelpScreenState extends State<HelpScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.black.withOpacity(0.3) : Colors.white,
+                      color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: isDark ? Colors.grey[700]! : Colors.grey[200]!),
                     ),
@@ -451,7 +451,7 @@ class _HelpScreenState extends State<HelpScreen> {
               decoration: BoxDecoration(
                 color: isDark ? Colors.grey[800] : Colors.white,
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 5)],
               ),
               child: Icon(icon, color: iconColor, size: 20),
             ),

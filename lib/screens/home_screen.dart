@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/services/auth_service.dart';
-import 'package:uas_saya/screens/settings_screen.dart';
+import 'package:uas_saya/screens/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,76 +14,101 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF0f172a) : Colors.white,
       appBar: AppBar(
-        title: Text('Dashboard', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
+        title: Text('CeLOE Home', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: isDark ? Colors.white : Colors.black87,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_rounded),
+            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsScreen()),
-              );
+              Navigator.of(context).pushReplacementNamed('/'); // Go back to splash/login
             },
           ),
           const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 120),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Welcome Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFc026d3), Color(0xFF7c3aed)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFc026d3).withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
+            // Welcome Card with Clickable Profile
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFB94444), Color(0xFFD32F2F)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                   const Icon(Icons.star_rounded, color: Colors.white, size: 32),
-                   const SizedBox(height: 16),
-                   Text(
-                    'Halo,',
-                    style: GoogleFonts.poppins(color: Colors.white70, fontSize: 16),
-                  ),
-                  Text(
-                    auth.currentUsername,
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFB94444).withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
                     ),
-                  ),
-                  Text(
-                    'Selamat datang kembali di CeLOE!',
-                    style: GoogleFonts.poppins(color: Colors.white.withOpacity(0.8), fontSize: 14),
-                  ),
-                ],
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                           const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 32),
+                           const SizedBox(height: 16),
+                           Text(
+                            'Halo,',
+                            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 16),
+                          ),
+                          Text(
+                            auth.fullName,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Lihat profil Anda >',
+                            style: GoogleFonts.poppins(color: Colors.white.withValues(alpha: 0.8), fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Profile Avatar
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white24, width: 2),
+                        image: DecorationImage(
+                          image: NetworkImage(auth.avatarUrl),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             
             const SizedBox(height: 32),
             
             Text(
-              'Menu Cepat',
+              'Aktivitas Terakhir',
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -93,61 +118,31 @@ class HomeScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              children: [
-                 _buildMenuCard(context, 'Profil', Icons.person_rounded, Colors.blue),
-                 _buildMenuCard(context, 'Kursus Saya', Icons.book_rounded, Colors.orange),
-                 _buildMenuCard(context, 'Pengaturan', Icons.settings_rounded, Colors.teal, onTap: () {
-                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                  );
-                 }),
-                 _buildMenuCard(context, 'Logout', Icons.logout_rounded, Colors.red, onTap: () {
-                   Navigator.of(context).pop();
-                 }),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuCard(BuildContext context, String title, IconData icon, Color color, {VoidCallback? onTap}) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return InkWell(
-      onTap: onTap ?? () {},
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1e293b) : Colors.grey[100],
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+            // Dummy activity card
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                shape: BoxShape.circle,
+                color: isDark ? const Color(0xFF1e293b) : Colors.grey[100],
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, color: color, size: 28),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white : Colors.black87,
+              child: Row(
+                children: [
+                   Container(
+                     padding: const EdgeInsets.all(10),
+                     decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), shape: BoxShape.circle),
+                     child: const Icon(Icons.play_circle_fill, color: Colors.blue),
+                   ),
+                   const SizedBox(width: 16),
+                   Expanded(
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text('Teknik Informatika', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 14)),
+                         Text('Lanjut menonton: Modul 1', style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey)),
+                       ],
+                     ),
+                   ),
+                ],
               ),
             ),
           ],

@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   width: 320,
                   height: 320,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         height: 180,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                       ).animate().scale(
                         begin: const Offset(1, 1),
@@ -131,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       letterSpacing: 2.0,
                     ),
                   ).animate().fadeIn(delay: 400.ms, duration: 800.ms).moveY(begin: 20, end: 0),
@@ -280,7 +280,7 @@ class _BouncingDotsState extends State<BouncingDots> with TickerProviderStateMix
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: widget.color.withOpacity(0.8),
+                color: widget.color.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
             );

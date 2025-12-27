@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/help_screen.dart';
-import 'package:uas_saya/screens/home_screen.dart';
+import 'package:uas_saya/screens/main_wrapper.dart';
 import 'package:uas_saya/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,9 +28,9 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const MainWrapper()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.2),
+                              Colors.black.withValues(alpha: 0.2),
                               Colors.transparent,
                             ],
                           ),
@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -205,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                         elevation: 8,
-                        shadowColor: const Color(0xFFc026d3).withOpacity(0.4),
+                        shadowColor: const Color(0xFFc026d3).withValues(alpha: 0.4),
                       ),
                       child: Text(
                         'Log In',
@@ -249,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
                    CustomPaint(
                     size: Size(MediaQuery.of(context).size.width, 200),
                     painter: BottomWavePainter(
-                      color: const Color(0xFFc026d3).withOpacity(0.3),
+                      color: const Color(0xFFc026d3).withValues(alpha: 0.3),
                       offset: 10,
                     ),
                   ),

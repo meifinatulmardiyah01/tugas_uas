@@ -24,7 +24,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (_usernameController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
       _authService.updateCredentials(
         _usernameController.text,
-        _passwordController.text,
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
