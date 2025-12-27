@@ -4,12 +4,16 @@ class AuthService {
   factory AuthService() => _instance;
   AuthService._internal();
 
-  // No fixed credentials needed anymore for this logic
+  // Profile data
   String _currentUsername = '';
-  String _fullName = 'Meifinatul Mardiyah';
+  String _firstName = 'Meifinatul';
+  String _lastName = 'Mardiyah';
+  String _email = 'meifinatulm@365.telkomuniversity.ac.id';
+  String _country = 'Indonesia';
+  String _description = 'Student at Telkom University';
   String _prodi = 'Teknik Informatika';
   String _fakultas = 'Teknik';
-  String _avatarUrl = 'https://i.pinimg.com/736x/21/df/f5/21dff5738865d481b4904033327d7f95.jpg'; // Cute anime girl placeholder
+  String _avatarUrl = 'https://i.pinimg.com/736x/21/df/f5/21dff5738865d481b4904033327d7f95.jpg'; 
 
   final List<Map<String, dynamic>> _courses = [
     {
@@ -201,7 +205,12 @@ class AuthService {
   ];
 
   String get currentUsername => _currentUsername;
-  String get fullName => _fullName;
+  String get firstName => _firstName;
+  String get lastName => _lastName;
+  String get fullName => '$_firstName $_lastName';
+  String get email => _email;
+  String get country => _country;
+  String get description => _description;
   String get prodi => _prodi;
   String get fakultas => _fakultas;
   String get avatarUrl => _avatarUrl;
@@ -209,14 +218,28 @@ class AuthService {
 
   bool validate(String username, String password) {
     if (username.endsWith('.ac.id') && password.isNotEmpty) {
-      _currentUsername = username; // Store for the session display
+      _currentUsername = username;
+      _email = username; // Sync email with username
       return true;
     }
     return false;
   }
 
-  void updateProfile({String? fullName, String? prodi, String? fakultas, String? avatarUrl}) {
-    if (fullName != null) _fullName = fullName;
+  void updateProfile({
+    String? firstName, 
+    String? lastName, 
+    String? email,
+    String? country,
+    String? description,
+    String? prodi, 
+    String? fakultas, 
+    String? avatarUrl
+  }) {
+    if (firstName != null) _firstName = firstName;
+    if (lastName != null) _lastName = lastName;
+    if (email != null) _email = email;
+    if (country != null) _country = country;
+    if (description != null) _description = description;
     if (prodi != null) _prodi = prodi;
     if (fakultas != null) _fakultas = fakultas;
     if (avatarUrl != null) _avatarUrl = avatarUrl;

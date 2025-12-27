@@ -14,7 +14,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _auth = AuthService();
   final String _currentTime = DateFormat('EEEE, d MMMM yyyy, h:mm a').format(DateTime.now());
-  int _activeTab = 1; // Default to "Kelas" as per HTML screenshot
+  int _activeTab = 1; // 0: About Me, 1: Kelas, 2: Edit Profile
 
   @override
   Widget build(BuildContext context) {
@@ -29,116 +29,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
       body: Column(
         children: [
-          // Header Section
+          // Vibrant Centered Header
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.only(top: 60, bottom: 60),
+            padding: const EdgeInsets.only(top: 60, bottom: 80, left: 24, right: 24),
             decoration: BoxDecoration(
               gradient: primaryGradient,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(30),
-                bottomRight: Radius.circular(30),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
             ),
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                  ),
+                  ],
                 ),
-                // Profile Image
+                const SizedBox(height: 10),
                 Container(
-                  width: 110,
-                  height: 110,
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 4),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      )
                     ],
-                    image: DecorationImage(
-                      image: NetworkImage(_auth.avatarUrl),
-                      fit: BoxFit.cover,
-                    ),
+                  ),
+                  child: ClipOval(
+                    child: Image.network(_auth.avatarUrl, fit: BoxFit.cover),
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Name
                 Text(
                   _auth.fullName.toUpperCase(),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        offset: const Offset(0, 2),
-                        blurRadius: 4,
-                      ),
-                    ],
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
 
-          // Tab Section
-          Transform.translate(
-            offset: const Offset(0, -25),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1F2937) : Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark ? Colors.grey[700]! : Colors.grey[100]!,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    _buildTabItem(0, 'About Me'),
-                    _buildTabItem(1, 'Kelas'),
-                    _buildTabItem(2, 'Edit Profile'),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Content Section
+          // Tab View Content
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 100),
-              child: _buildContent(),
+            child: Container(
+              transform: Matrix4.translationValues(0, -30, 0),
+              child: Column(
+                children: [
+                  // Tab Bar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF1F2937) : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          )
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          _buildTabItem(0, 'About Me', isDark),
+                          _buildTabItem(1, 'Kelas', isDark),
+                          _buildTabItem(2, 'Edit Profile', isDark),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Tab Content
+                  Expanded(
+                    child: _buildActiveTabContent(isDark),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -146,104 +127,181 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildTabItem(int index, String label) {
+  Widget _buildTabItem(int index, String label, bool isDark) {
     bool isActive = _activeTab == index;
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = const Color(0xFFC026D3);
-
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _activeTab = index),
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            border: isActive 
-              ? Border(bottom: BorderSide(color: activeColor, width: 2))
-              : null,
-          ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
-              fontSize: 13,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-              color: isActive 
-                ? activeColor
-                : (isDark ? Colors.grey[400] : Colors.grey[500]),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                  color: isActive 
+                      ? (isDark ? Colors.white : Colors.black)
+                      : Colors.grey,
+                ),
+              ),
             ),
-          ),
+            if (isActive)
+              Container(
+                width: 30,
+                height: 3,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              )
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildContent() {
-    if (_activeTab == 0) return _buildAboutMe();
-    if (_activeTab == 1) return _buildKelas();
-    if (_activeTab == 2) return _buildEditProfile();
-    return const SizedBox();
+  Widget _buildActiveTabContent(bool isDark) {
+    switch (_activeTab) {
+      case 0: return _buildAboutTab(isDark);
+      case 1: return _buildKelasTab(isDark);
+      case 2: return _buildEditTab(isDark);
+      default: return const SizedBox();
+    }
   }
 
-  Widget _buildAboutMe() {
+  Widget _buildAboutTab(bool isDark) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 40, 24, 100),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfoSection('Informasi Akun', [
+            _buildInfoRow(Icons.person_outline, 'Nama Lengkap', _auth.fullName, isDark),
+            _buildInfoRow(Icons.badge_outlined, 'NIM/Username', _auth.currentUsername, isDark),
+            _buildInfoRow(Icons.email_outlined, 'Email', _auth.email, isDark),
+          ], isDark),
+          const SizedBox(height: 24),
+          _buildInfoSection('Akademik', [
+            _buildInfoRow(Icons.school_outlined, 'Program Studi', _auth.prodi, isDark),
+            _buildInfoRow(Icons.account_balance_outlined, 'Fakultas', _auth.fakultas, isDark),
+            _buildInfoRow(Icons.public_outlined, 'Negara', _auth.country, isDark),
+          ], isDark),
+          const SizedBox(height: 24),
+          _buildInfoSection('Akses Terakhir', [
+            _buildInfoRow(Icons.login, 'First access', 'Monday, 8 February 2021', isDark),
+            _buildInfoRow(Icons.access_time, 'Last access', _currentTime, isDark),
+          ], isDark),
+          const SizedBox(height: 32),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false),
+              icon: const Icon(Icons.logout_rounded),
+              label: const Text('Log Out'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[50],
+                foregroundColor: Colors.red,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKelasTab(bool isDark) {
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(24, 30, 24, 100),
+      itemCount: _auth.courses.length,
+      itemBuilder: (context, index) {
+        final course = _auth.courses[index];
+        return _buildCourseCard(course, isDark);
+      },
+    );
+  }
+
+  Widget _buildEditTab(bool isDark) {
+    return _ProfileEditForm(
+      auth: _auth, 
+      onSave: () => setState(() => _activeTab = 0),
+    );
+  }
+
+  Widget _buildInfoSection(String title, List<Widget> children, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
-        _buildSectionTitle('Informasi User'),
-        const SizedBox(height: 16),
-        _buildInfoItem('Email address', _auth.currentUsername),
-        const SizedBox(height: 16),
-        _buildInfoItem('Program Studi', _auth.prodi),
-        const SizedBox(height: 16),
-        _buildInfoItem('Fakultas', _auth.fakultas),
-        
-        const SizedBox(height: 32),
-        
-        _buildSectionTitle('Aktivitas Login'),
-        const SizedBox(height: 16),
-        _buildInfoItem('First access to site', 'Monday, 7 September 2020, 9:27 AM', subText: '(Historical)'),
-        const SizedBox(height: 16),
-        _buildInfoItem('Last access to site', _currentTime, subText: '(now)'),
-        
-        const SizedBox(height: 32),
-        
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            icon: const Icon(Icons.logout, size: 18),
-            label: const Text('Log Out'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFC026D3),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
+        Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF8B5CF6),
           ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1F2937) : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.02),
+                blurRadius: 5,
+                offset: const Offset(0, 2),
+              )
+            ],
+          ),
+          child: Column(children: children),
         ),
       ],
     );
   }
 
-  Widget _buildKelas() {
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        ..._auth.courses.map((course) => _buildCourseCard(course)),
-      ],
+  Widget _buildInfoRow(IconData icon, String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: Colors.grey),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey)),
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildCourseCard(Map<String, dynamic> course) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget _buildCourseCard(Map<String, dynamic> course, bool isDark) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => CourseDetailScreen(course: course),
-          ),
+          MaterialPageRoute(builder: (context) => CourseDetailScreen(course: course)),
         );
       },
       child: Container(
@@ -252,9 +310,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF1F2937) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isDark ? Colors.grey[700]! : const Color(0xFFF9FAFB),
-          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.02),
@@ -264,19 +319,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 70,
-              height: 70,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                 color: Color(course['color']),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 _getIconData(course['icon']),
                 color: Color(course['iconColor']),
-                size: 32,
+                size: 28,
               ),
             ),
             const SizedBox(width: 16),
@@ -284,42 +338,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 4),
                   Text(
                     course['title'].toUpperCase(),
                     style: GoogleFonts.poppins(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       color: isDark ? Colors.white : Colors.black87,
-                      height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
                     course['code'],
                     style: GoogleFonts.poppins(
                       fontSize: 10,
+                      color: const Color(0xFFEC4899),
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFFC026D3),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.event, size: 10, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        course['date'],
-                        style: GoogleFonts.poppins(
-                          fontSize: 9,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
             ),
+            const Icon(Icons.chevron_right, color: Colors.grey),
           ],
         ),
       ),
@@ -338,147 +377,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
       default: return Icons.school;
     }
   }
-
-  Widget _buildEditProfile() {
-    return Column(
-      children: [
-        const SizedBox(height: 24),
-        _ProfileEditForm(onSaved: () => setState(() => _activeTab = 0)),
-      ],
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Text(
-      title,
-      style: GoogleFonts.poppins(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        color: isDark ? Colors.white : Colors.black87,
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value, {String? subText}) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[500]),
-        ),
-        const SizedBox(height: 4),
-        RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: value,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.grey[200] : Colors.grey[800],
-                ),
-              ),
-              if (subText != null)
-                TextSpan(
-                  text: ' $subText',
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.grey[500],
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 class _ProfileEditForm extends StatefulWidget {
-  final VoidCallback onSaved;
-  const _ProfileEditForm({required this.onSaved});
+  final AuthService auth;
+  final VoidCallback onSave;
+
+  const _ProfileEditForm({required this.auth, required this.onSave});
 
   @override
   State<_ProfileEditForm> createState() => _ProfileEditFormState();
 }
 
 class _ProfileEditFormState extends State<_ProfileEditForm> {
-  final _auth = AuthService();
-  final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
-  late TextEditingController _prodiController;
-  late TextEditingController _fakultasController;
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _emailController;
+  late TextEditingController _countryController;
+  late TextEditingController _descriptionController;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: _auth.fullName);
-    _prodiController = TextEditingController(text: _auth.prodi);
-    _fakultasController = TextEditingController(text: _auth.fakultas);
+    _firstNameController = TextEditingController(text: widget.auth.firstName);
+    _lastNameController = TextEditingController(text: widget.auth.lastName);
+    _emailController = TextEditingController(text: widget.auth.email);
+    _countryController = TextEditingController(text: widget.auth.country);
+    _descriptionController = TextEditingController(text: widget.auth.description);
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
+    _countryController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 30, 24, 120),
       child: Column(
         children: [
-          _buildTextField('Nama Lengkap', _nameController),
-          const SizedBox(height: 16),
-          _buildTextField('Program Studi', _prodiController),
-          const SizedBox(height: 16),
-          _buildTextField('Fakultas', _fakultasController),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _auth.updateProfile(
-                    fullName: _nameController.text,
-                    prodi: _prodiController.text,
-                    fakultas: _fakultasController.text,
+          _buildTextField('Nama Pertama', _firstNameController, isDark, placeholder: 'Enter first name'),
+          _buildTextField('Nama Terakhir', _lastNameController, isDark, placeholder: 'Enter last name'),
+          _buildTextField('E-mail Address', _emailController, isDark, placeholder: 'name@example.com', keyboardType: TextInputType.emailAddress),
+          _buildTextField('Negara', _countryController, isDark, placeholder: 'Indonesia'),
+          _buildTextField('Deskripsi', _descriptionController, isDark, placeholder: 'Write something about yourself...', maxLines: 4),
+          
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  widget.auth.updateProfile(
+                    firstName: _firstNameController.text,
+                    lastName: _lastNameController.text,
+                    email: _emailController.text,
+                    country: _countryController.text,
+                    description: _descriptionController.text,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Profil berhasil diperbarui!')),
+                    const SnackBar(content: Text('Profil berhasil disimpan!')),
                   );
-                  widget.onSaved();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC026D3),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  widget.onSave();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                  foregroundColor: isDark ? Colors.white : Colors.black,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+                child: Text('Simpan', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
               ),
-              child: const Text('Simpan Perubahan'),
-            ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: GoogleFonts.poppins(color: Colors.grey),
-        filled: true,
-        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey[50],
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+  Widget _buildTextField(String label, TextEditingController controller, bool isDark, {String? placeholder, int maxLines = 1, TextInputType? keyboardType}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            child: Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.grey[300] : Colors.grey[800],
+              ),
+            ),
+          ),
+          TextField(
+            controller: controller,
+            maxLines: maxLines,
+            keyboardType: keyboardType,
+            style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
+            decoration: InputDecoration(
+              hintText: placeholder,
+              hintStyle: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1F2937) : Colors.white,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey[400]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(color: Color(0xFF8B5CF6), width: 2),
+              ),
+            ),
+          ),
+        ],
       ),
-      validator: (v) => v!.isEmpty ? 'Tidak boleh kosong' : null,
     );
   }
 }
