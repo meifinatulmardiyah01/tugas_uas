@@ -247,23 +247,29 @@ class AuthService {
   final List<Map<String, dynamic>> _announcements = [
     {
       'title': 'Maintenance Pra UAS Semester Genap 2020/2021',
+      'subTitle': 'Maintenance LMS',
       'author': 'By Admin Celoe',
       'date': DateTime.now().subtract(const Duration(days: 2, hours: 5)),
       'icon': 'campaign',
-      'content': 'Halo Civitas Academica Telkom University,\n\nSehubungan dengan persiapan pelaksanaan UAS Semester Genap 2020/2021, akan dilakukan maintenance rutin pada sistem CeLOE untuk memastikan performa yang optimal selama masa ujian.\n\nMaintenance akan dilaksanakan pada:\nHari/Tanggal: Sabtu, 5 Juni 2021\nJam: 22:00 - 04:00 WIB\n\nSelama masa tersebut, sistem CeLOE tidak dapat diakses untuk sementara. Mohon maaf atas ketidaknyamanannya.\n\nSalam,\nAdmin CeLOE',
+      'imageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCi5rhcANWNzkBTeFoozeYLmBaFUioSf1K6aIHyC4sgRKNCa-_BHIyZu0iOa-soA_bxj5HS-hpdSEfLOmzGhmr5RR4_6oOFfBaGcpISLqXJMvnpNSRocJrIRxTuTLTTlrQsdpudn0SO_pHqYWNLTr6uhsALO2WnOsPIivxJdBSAgWKAcP9Gi_FjVByL0kdepHC61dnP2UsDKlXvb_2H-UBVsuTDZK8-3kwiMHU0xAZFPvrZXjpAs0Y8mKirnq-je3WAE2udG0sVqjuA',
+      'content': 'Diinformasikan kepada seluruh pengguna LMS, kami dari tim CeLOE akan melakukan maintenance pada tanggal 12 Juni 2021, untuk meningkatkan layanan server dalam menghadapi ujian akhir semester (UAS).\n\nDengan adanya kegiatan maintenance tersebut maka situs LMS (lms.telkomuniversity.ac.id) tidak dapat diakses mulai pukul 00.00 s/d 06.00 WIB.\n\nDemikian informasi ini kami sampaikan, mohon maaf atas ketidaknyamanannya.',
     },
     {
       'title': 'Pengumuman Maintenance Rutin',
+      'subTitle': 'Peningkatan Keamanan',
       'author': 'By Admin Celoe',
       'date': DateTime.now().subtract(const Duration(days: 15, hours: 2)),
       'icon': 'campaign',
+      'imageUrl': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc4b?auto=format&fit=crop&q=80&w=1000',
       'content': 'Diberitahukan kepada seluruh pengguna CeLOE bahwa akan dilakukan pemeliharaan server rutin untuk peningkatan keamanan dan stabilitas sistem.\n\nKegiatan ini akan berdampak pada aksesibilitas fitur kuis dan upload tugas untuk sementara waktu.\n\nPastikan Anda telah menyimpan progres pekerjaan Anda sebelum jadwal maintenance dimulai.\n\nTerima kasih atas pengertiannya.',
     },
     {
       'title': 'Maintenance Pra UAS Semester Ganjil 2020/2021',
+      'subTitle': 'Optimasi Database',
       'author': 'By Admin Celoe',
       'date': DateTime.now().subtract(const Duration(days: 15, hours: 24)),
       'icon': 'campaign',
+      'imageUrl': 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=1000',
       'content': 'Persiapan UAS Semester Ganjil 2020/2021 sedang berlangsung. Kami akan melakukan optimasi database pada hari Minggu ini.\n\nDiharapkan mahasiswa tidak melakukan aktivitas berat pada sistem selama proses ini berlangsung agar tidak terjadi data loss.\n\nInformasi lebih lanjut akan disampaikan melalui kanal resmi lainnya.',
     },
   ];
