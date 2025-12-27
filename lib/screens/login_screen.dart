@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_saya/screens/help_screen.dart';
+import 'package:uas_saya/screens/home_screen.dart';
+import 'package:uas_saya/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,22 +15,27 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  final _authService = AuthService();
 
   void _handleLogin() {
-    String email = _emailController.text;
+    String username = _emailController.text;
     String password = _passwordController.text;
 
-    if (email == "admin@celoe.id" && password == "password123") {
+    if (_authService.validate(username, password)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Login Berhasil! Selamat datang di celoe.'),
+          content: Text('Login Berhasil! Selamat datang.'),
           backgroundColor: Colors.green,
         ),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Email atau Password salah.'),
+          content: Text('Username atau Password salah.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -212,7 +220,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HelpScreen()),
+                      );
+                    },
                     child: Text(
                       'Bantuan ?',
                       style: GoogleFonts.poppins(
