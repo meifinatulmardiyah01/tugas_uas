@@ -244,6 +244,30 @@ class AuthService {
     },
   ];
 
+  final List<Map<String, dynamic>> _announcements = [
+    {
+      'title': 'Maintenance Pra UAS Semester Genap 2020/2021',
+      'author': 'By Admin Celoe',
+      'date': DateTime.now().subtract(const Duration(days: 2, hours: 5)),
+      'icon': 'campaign',
+      'content': 'Halo Civitas Academica Telkom University,\n\nSehubungan dengan persiapan pelaksanaan UAS Semester Genap 2020/2021, akan dilakukan maintenance rutin pada sistem CeLOE untuk memastikan performa yang optimal selama masa ujian.\n\nMaintenance akan dilaksanakan pada:\nHari/Tanggal: Sabtu, 5 Juni 2021\nJam: 22:00 - 04:00 WIB\n\nSelama masa tersebut, sistem CeLOE tidak dapat diakses untuk sementara. Mohon maaf atas ketidaknyamanannya.\n\nSalam,\nAdmin CeLOE',
+    },
+    {
+      'title': 'Pengumuman Maintenance Rutin',
+      'author': 'By Admin Celoe',
+      'date': DateTime.now().subtract(const Duration(days: 15, hours: 2)),
+      'icon': 'campaign',
+      'content': 'Diberitahukan kepada seluruh pengguna CeLOE bahwa akan dilakukan pemeliharaan server rutin untuk peningkatan keamanan dan stabilitas sistem.\n\nKegiatan ini akan berdampak pada aksesibilitas fitur kuis dan upload tugas untuk sementara waktu.\n\nPastikan Anda telah menyimpan progres pekerjaan Anda sebelum jadwal maintenance dimulai.\n\nTerima kasih atas pengertiannya.',
+    },
+    {
+      'title': 'Maintenance Pra UAS Semester Ganjil 2020/2021',
+      'author': 'By Admin Celoe',
+      'date': DateTime.now().subtract(const Duration(days: 15, hours: 24)),
+      'icon': 'campaign',
+      'content': 'Persiapan UAS Semester Ganjil 2020/2021 sedang berlangsung. Kami akan melakukan optimasi database pada hari Minggu ini.\n\nDiharapkan mahasiswa tidak melakukan aktivitas berat pada sistem selama proses ini berlangsung agar tidak terjadi data loss.\n\nInformasi lebih lanjut akan disampaikan melalui kanal resmi lainnya.',
+    },
+  ];
+
   String get currentUsername => _currentUsername;
   String get firstName => _firstName;
   String get lastName => _lastName;
@@ -256,6 +280,7 @@ class AuthService {
   String get avatarUrl => _avatarUrl;
   List<Map<String, dynamic>> get courses => _courses;
   List<Map<String, dynamic>> get notifications => _notifications;
+  List<Map<String, dynamic>> get announcements => _announcements;
 
   void markNotificationAsRead(int index) {
     if (index >= 0 && index < _notifications.length) {
