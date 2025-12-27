@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/home_screen.dart';
 import 'package:uas_saya/screens/course_detail_screen.dart';
+import 'package:uas_saya/screens/notification_screen.dart';
 import 'package:uas_saya/services/auth_service.dart';
 
 class MainWrapper extends StatefulWidget {
@@ -17,7 +18,7 @@ class _MainWrapperState extends State<MainWrapper> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const CourseListScreen(),
-    const PlaceholderScreen(title: 'Notifikasi', icon: Icons.notifications),
+    const NotificationScreen(),
   ];
 
   @override

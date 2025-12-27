@@ -204,6 +204,46 @@ class AuthService {
     },
   ];
 
+  final List<Map<String, dynamic>> _notifications = [
+    {
+      'title': 'Pengajuan tugas berhasil',
+      'message': 'Anda telah mengirimkan pengajuan tugas untuk Pengumpulan Laporan Akhir Assessment 3 (Tugas Besar)',
+      'highlight': 'Pengumpulan Laporan Akhir Assessment 3 (Tugas Besar)',
+      'time': '3 Hari 9 Jam Yang Lalu',
+      'type': 'description',
+      'isNew': true,
+      'courseIndex': 1, // Desain Antarmuka
+    },
+    {
+      'title': 'Kuis baru tersedia',
+      'message': 'Anda telah mendapatkan akses untuk Scientific Vocabulary Quiz',
+      'highlight': 'Scientific Vocabulary Quiz',
+      'time': '4 Jam yang lalu',
+      'type': 'quiz',
+      'isNew': true,
+      'courseIndex': 0, // Bahasa Inggris
+    },
+    {
+      'title': 'Pengajuan tugas berhasil',
+      'message': 'Anda telah mengirimkan pengajuan tugas untuk Project Akhir Semester',
+      'highlight': 'Project Akhir Semester',
+      'time': '5 Hari yang lalu',
+      'type': 'description',
+      'isNew': false,
+      'courseIndex': 4, // Pemrograman Multimedia
+    },
+    {
+      'title': 'Nilai dirilis',
+      'message': 'Nilai untuk Kuis Wawasan Kebangsaan telah dirilis.',
+      'highlight': 'Kuis Wawasan Kebangsaan',
+      'time': '1 Minggu Yang Lalu',
+      'type': 'check_circle',
+      'isNew': false,
+      'isOldSection': true,
+      'courseIndex': 2, // Kewarganegaraan
+    },
+  ];
+
   String get currentUsername => _currentUsername;
   String get firstName => _firstName;
   String get lastName => _lastName;
@@ -215,6 +255,13 @@ class AuthService {
   String get fakultas => _fakultas;
   String get avatarUrl => _avatarUrl;
   List<Map<String, dynamic>> get courses => _courses;
+  List<Map<String, dynamic>> get notifications => _notifications;
+
+  void markNotificationAsRead(int index) {
+    if (index >= 0 && index < _notifications.length) {
+      _notifications[index]['isNew'] = false;
+    }
+  }
 
   bool validate(String username, String password) {
     if (username.endsWith('.ac.id') && password.isNotEmpty) {
