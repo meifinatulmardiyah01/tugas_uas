@@ -17,6 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   final _authService = AuthService();
 
+  final Color primaryPurple = const Color(0xFF8B5CF6);
+  final Color primaryPink = const Color(0xFFEC4899);
+  final Color fuchsia600 = const Color(0xFFC026D3);
+
   void _handleLogin() {
     String username = _emailController.text;
     String password = _passwordController.text;
@@ -63,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Image
                       Positioned.fill(
                         child: Image.network(
-                          'https://lh3.googleusercontent.com/aida-public/AB6AXuDwQf6hk18HLhrRpppyzxOASp1jkfWITW4YaZ160awPsxA9RmJjaqfVpfxAhqPHksM4Bf-K0zOvajF5IgFhpxuSJDHSaAAC3EVpa5G4Xx8tfExAWLrVQ8SIkey6n2BYXerSSmsu-SzoQ0xk75awZ-D8C22lzrtTBMHW91_pl2ZzHrdlyKtyTGh5GusA8krctPuWMqBoeePNZ-ThYEVAbyOjLSMXDhU-32lt93D4SbG7-t2-cVt36l4CyWgz7eH6xLFWfpmzt6eYOHqb',
+                          'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -74,8 +78,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withValues(alpha: 0.2),
-                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.3),
+                              primaryPurple.withValues(alpha: 0.2),
                             ],
                           ),
                         ),
@@ -105,7 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: 80,
                       height: 80,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFc026d3), // Fuchsia 600
+                        gradient: LinearGradient(
+                          colors: [primaryPurple, primaryPink],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: isDark ? const Color(0xFF111827) : Colors.white,
@@ -113,9 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
+                            color: primaryPurple.withValues(alpha: 0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
@@ -157,10 +165,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey[300]!),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFc026d3), width: 2),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: fuchsia600, width: 2),
                       ),
-                      floatingLabelStyle: const TextStyle(color: Color(0xFFc026d3)),
+                      floatingLabelStyle: TextStyle(color: fuchsia600),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -176,10 +184,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey[300]!),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFc026d3), width: 2),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: fuchsia600, width: 2),
                       ),
-                      floatingLabelStyle: const TextStyle(color: Color(0xFFc026d3)),
+                      floatingLabelStyle: TextStyle(color: fuchsia600),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off_rounded : Icons.visibility_rounded,
@@ -199,13 +207,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: ElevatedButton(
                       onPressed: _handleLogin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFc026d3),
+                        backgroundColor: fuchsia600,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100),
                         ),
                         elevation: 8,
-                        shadowColor: const Color(0xFFc026d3).withValues(alpha: 0.4),
+                        shadowColor: fuchsia600.withValues(alpha: 0.4),
                       ),
                       child: Text(
                         'Log In',
@@ -229,7 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text(
                       'Bantuan ?',
                       style: GoogleFonts.poppins(
-                        color: const Color(0xFFc026d3),
+                        color: fuchsia600,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -249,14 +257,14 @@ class _LoginScreenState extends State<LoginScreen> {
                    CustomPaint(
                     size: Size(MediaQuery.of(context).size.width, 200),
                     painter: BottomWavePainter(
-                      color: const Color(0xFFc026d3).withValues(alpha: 0.3),
+                      color: fuchsia600.withValues(alpha: 0.3),
                       offset: 10,
                     ),
                   ),
                   CustomPaint(
                     size: Size(MediaQuery.of(context).size.width, 200),
                     painter: BottomWavePainter(
-                      color: const Color(0xFFc026d3),
+                      color: fuchsia600,
                       offset: 0,
                     ),
                   ),
@@ -279,8 +287,6 @@ class TopWavePainter extends CustomPainter {
     Paint paint = Paint()..color = color;
     Path path = Path();
     
-    // HTML Wave path: M0,120 L1200,120 L1200,0 C1000,60 600,100 0,60 Z
-    // Normalized to Flutter coordinates:
     path.moveTo(0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, 0);
@@ -305,7 +311,6 @@ class BottomWavePainter extends CustomPainter {
     Paint paint = Paint()..color = color;
     Path path = Path();
     
-    // Wave logic inspired by HTML path
     path.moveTo(0, size.height * 0.5 + offset);
     path.cubicTo(
       size.width * 0.25, size.height * 0.4 + offset,

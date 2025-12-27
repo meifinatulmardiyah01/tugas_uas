@@ -10,9 +10,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = AuthService();
     bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryGradient = const LinearGradient(
+      colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0f172a) : Colors.white,
+      backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
       appBar: AppBar(
         title: Text('CeLOE Home', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
@@ -20,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         foregroundColor: isDark ? Colors.white : Colors.black87,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+            icon: const Icon(Icons.logout_rounded, color: Color(0xFFEC4899)),
             onPressed: () {
               Navigator.of(context).pushReplacementNamed('/'); // Go back to splash/login
             },
@@ -45,15 +50,11 @@ class HomeScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFB94444), Color(0xFFD32F2F)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  gradient: primaryGradient,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFB94444).withValues(alpha: 0.3),
+                      color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
                       blurRadius: 15,
                       offset: const Offset(0, 8),
                     ),
@@ -93,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white24, width: 2),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
                         image: DecorationImage(
                           image: NetworkImage(auth.avatarUrl),
                           fit: BoxFit.cover,
@@ -122,15 +123,22 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1e293b) : Colors.grey[100],
+                color: isDark ? const Color(0xFF1F2937) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
                    Container(
                      padding: const EdgeInsets.all(10),
-                     decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), shape: BoxShape.circle),
-                     child: const Icon(Icons.play_circle_fill, color: Colors.blue),
+                     decoration: BoxDecoration(color: const Color(0xFF8B5CF6).withValues(alpha: 0.1), shape: BoxShape.circle),
+                     child: const Icon(Icons.play_circle_fill, color: Color(0xFF8B5CF6)),
                    ),
                    const SizedBox(width: 16),
                    Expanded(

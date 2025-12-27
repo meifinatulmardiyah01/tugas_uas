@@ -10,464 +10,317 @@ class HelpScreen extends StatefulWidget {
 }
 
 class _HelpScreenState extends State<HelpScreen> {
-  String _language = 'EN'; // 'ID' or 'EN'
+  String _currentLang = 'ID';
+  final Color primaryColor = const Color(0xFFC026D3); // Fuchsia 600
 
   final Map<String, Map<String, String>> _localizedText = {
     'EN': {
-      'title': 'Login Help',
-      'subtitle': 'Instructions for Telkom University LMS',
-      'restricted_title': 'Access Restricted',
-      'restricted_desc': 'Only available for Lecturers and Students of Telkom University.',
-      'credentials_title': 'Credentials Format',
-      'username_label': 'Username',
-      'username_desc': 'Any username followed by the suffix:',
-      'password_label': 'Password',
-      'password_desc': 'Use your SSO / iGracias account password.',
+      'title': 'Help Center',
+      'welcome': 'How can we help you?',
+      'username_title': 'Username Format',
+      'username_desc': 'Use your 365 email ending with .ac.id',
+      'password_title': 'Default Password',
+      'password_desc': 'Your password is not empty.',
       'failed_title': 'Login Failed?',
-      'failed_desc': 'If authentication fails, you may not have updated your password to a "Strong Password".',
-      'failed_info': 'Please change your password in iGracias.',
-      'helpdesk_title': 'CeLOE Helpdesk',
-      'email_support': 'Email Support',
-      'wa_support': 'WhatsApp',
+      'failed_desc': 'Ensure your internet connection is stable and credentials are correct.',
+      'contact_title': 'Contact Support',
+      'contact_desc': 'Need more help? Our team is here for you 24/7.',
+      'contact_btn': 'Chat with Support',
     },
     'ID': {
-      'title': 'Bantuan Login',
-      'subtitle': 'Instruksi untuk LMS Telkom University',
-      'restricted_title': 'Akses Terbatas',
-      'restricted_desc': 'Hanya tersedia untuk Dosen dan Mahasiswa Telkom University.',
-      'credentials_title': 'Format Kredensial',
-      'username_label': 'Username',
-      'username_desc': 'Nama apa saja yang diakhiri dengan:',
-      'password_label': 'Password',
-      'password_desc': 'Gunakan kata sandi akun SSO / iGracias Anda.',
+      'title': 'Pusat Bantuan',
+      'welcome': 'Ada yang bisa kami bantu?',
+      'username_title': 'Format Username',
+      'username_desc': 'Gunakan email 365 Anda yang berakhiran .ac.id',
+      'password_title': 'Password Default',
+      'password_desc': 'Password Anda tidak boleh kosong.',
       'failed_title': 'Gagal Login?',
-      'failed_desc': 'Jika autentikasi gagal, Anda mungkin belum memperbarui kata sandi menjadi "Strong Password".',
-      'failed_info': 'Silakan ganti kata sandi Anda di iGracias.',
-      'helpdesk_title': 'CeLOE Helpdesk',
-      'email_support': 'Dukungan Email',
-      'wa_support': 'WhatsApp',
-    }
+      'failed_desc': 'Pastikan koneksi internet stabil dan kredensial sudah benar.',
+      'contact_title': 'Hubungi Bantuan',
+      'contact_desc': 'Butuh bantuan lebih? Tim kami siap melayani 24/7.',
+      'contact_btn': 'Chat Sekarang',
+    },
   };
 
-  void _launchEmail() async {
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'infoceloe@telkomuniversity.ac.id',
-    );
-    if (await canLaunchUrl(emailLaunchUri)) {
-      await launchUrl(emailLaunchUri);
+  void _toggleLanguage(String lang) {
+    if (_currentLang != lang) {
+      setState(() {
+        _currentLang = lang;
+      });
     }
   }
 
-  void _launchWhatsApp() async {
-    final Uri whatsappUri = Uri.parse("https://wa.me/6282116663563");
-    if (await canLaunchUrl(whatsappUri)) {
-      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+  Future<void> _launchWhatsApp() async {
+    final Uri url = Uri.parse('https://wa.me/6281234567890');
+    if (!await launchUrl(url)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tidak dapat membuka WhatsApp')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final text = _localizedText[_language]!;
+    final text = _localizedText[_currentLang]!;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFc026d3), // Fuchsia 600
-              Color(0xFF7c3aed), // Violet 600
-              Color(0xFF3730a3), // Indigo 800
-            ],
-          ),
-        ),
-        child: Stack(
-          children: [
-            // Decorative Circles
-            Positioned(
-              top: 40,
-              left: -50,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-              ),
+      backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 220,
+            floating: false,
+            pinned: true,
+            backgroundColor: primaryColor,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
             ),
-            Positioned(
-              top: 150,
-              right: -20,
-              child: Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.pinkAccent.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-
-            Column(
-              children: [
-                const SizedBox(height: 50),
-                // Drag handle look-alike
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
                   ),
                 ),
-                const SizedBox(height: 20),
-                
-                // Back Button for usability
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    padding: const EdgeInsets.only(left: 20),
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF0f172a) : Colors.white,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(32),
-                        topRight: Radius.circular(32),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 20,
-                          offset: const Offset(0, -10),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: -50,
+                      right: -50,
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
                         ),
-                      ],
+                      ),
                     ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: SingleChildScrollView(
-                        key: ValueKey(_language),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Language Switcher
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                _buildLanguageButton('ID', '🇮🇩'),
-                                const SizedBox(width: 20),
-                                Container(height: 30, width: 1, color: Colors.grey.withValues(alpha: 0.3)),
-                                const SizedBox(width: 20),
-                                _buildLanguageButton('EN', '🇬🇧'),
-                              ],
-                            ),
-                            const SizedBox(height: 24),
-
-                          Center(
-                            child: Column(
-                              children: [
-                                Text(
-                                  text['title']!,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: isDark ? Colors.white : Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  text['subtitle']!,
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-
-                          // Access Restricted Alert
-                          _buildCard(
-                            color: isDark ? Colors.blue[900]!.withValues(alpha: 0.2) : const Color(0xFFEFF6FF),
-                            borderColor: Colors.blue.withValues(alpha: 0.1),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.blue,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: const Icon(Icons.school, size: 16, color: Colors.white),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        text['restricted_title']!,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue[800],
-                                        ),
-                                      ),
-                                      Text(
-                                        text['restricted_desc']!,
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          color: Colors.blue[600],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Credentials Section
-                          _buildSectionHeader(Icons.lock_person, text['credentials_title']!),
-                          const SizedBox(height: 12),
-                          _buildInfoCard(Icons.person, text['username_label']!, text['username_desc']!, 
-                            code: '.ac.id'),
-                          const SizedBox(height: 12),
-                          _buildInfoCard(Icons.vpn_key, text['password_label']!, text['password_desc']!),
-                          
-                          const SizedBox(height: 32),
-
-                          // Login Failed Section
-                          _buildSectionHeader(Icons.warning_rounded, text['failed_title']!, iconColor: Colors.orange),
-                          const SizedBox(height: 12),
-                          _buildCard(
-                            color: Colors.orange.withValues(alpha: 0.05),
-                            borderColor: Colors.orange.withValues(alpha: 0.1),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  text['failed_desc']!,
-                                  style: GoogleFonts.inter(fontSize: 14, height: 1.5, color: isDark ? Colors.grey[300] : Colors.black87),
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.info_outline, size: 14, color: Colors.orange),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      text['failed_info']!,
-                                      style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.orange),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 32),
-
-                          // Helpdesk Section
-                          _buildSectionHeader(Icons.support_agent, text['helpdesk_title']!),
-                          const SizedBox(height: 12),
-                          _buildContactLink(Icons.mail, text['email_support']!, 'infoceloe@telkomuniversity.ac.id', 
-                            Colors.pink, _launchEmail),
-                          const SizedBox(height: 12),
-                          _buildContactLink(Icons.chat, text['wa_support']!, '+62 821-1666-3563', 
-                            Colors.green, _launchWhatsApp),
-                          
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           const SizedBox(height: 40),
+                          const Icon(Icons.help_outline_rounded, size: 64, color: Colors.white),
+                          const SizedBox(height: 16),
+                          Text(
+                            text['title']!,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Language Toggle
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildLangBtn('ID', 'Indonesia'),
+                      const SizedBox(width: 12),
+                      _buildLangBtn('EN', 'English'),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  Text(
+                    text['welcome']!,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  _buildHelpCard(
+                    icon: Icons.alternate_email_rounded,
+                    title: text['username_title']!,
+                    desc: text['username_desc']!,
+                    iconBg: const Color(0xFFEDE9FE),
+                    iconColor: const Color(0xFF8B5CF6),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildHelpCard(
+                    icon: Icons.lock_outline_rounded,
+                    title: text['password_title']!,
+                    desc: text['password_desc']!,
+                    iconBg: const Color(0xFFFCE7F3),
+                    iconColor: const Color(0xFFEC4899),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildHelpCard(
+                    icon: Icons.wifi_off_rounded,
+                    title: text['failed_title']!,
+                    desc: text['failed_desc']!,
+                    iconBg: const Color(0xFFFFF7ED),
+                    iconColor: Colors.orange,
+                  ),
+                  
+                  const SizedBox(height: 40),
+                  
+                  // Contact Section
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF8B5CF6).withValues(alpha: 0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          text['contact_title']!,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          text['contact_desc']!,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            color: Colors.white.withValues(alpha: 0.9),
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: _launchWhatsApp,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: primaryColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            text['contact_btn']!,
+                            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
           ),
         ],
       ),
-    ),
-  );
-}
-
-  Widget _buildLanguageButton(String code, String flag) {
-    bool isSelected = _language == code;
-    return GestureDetector(
-      onTap: () => setState(() => _language = code),
-      behavior: HitTestBehavior.opaque,
-      child: Opacity(
-        opacity: isSelected ? 1.0 : 0.6,
-        child: Column(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.white : Colors.grey.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-                boxShadow: isSelected ? [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 4))
-                ] : [],
-                border: Border.all(
-                  color: isSelected ? const Color(0xFFc026d3) : Colors.transparent,
-                  width: 2,
-                ),
-              ),
-              child: Text(flag, style: const TextStyle(fontSize: 24)),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              code,
-              style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? const Color(0xFFc026d3) : Colors.grey,
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: 4, 
-              width: isSelected ? 16 : 0, 
-              margin: const EdgeInsets.only(top: 4), 
-              decoration: BoxDecoration(
-                color: const Color(0xFFc026d3), 
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
-  Widget _buildSectionHeader(IconData icon, String title, {Color iconColor = const Color(0xFFc026d3)}) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: iconColor),
-        const SizedBox(width: 8),
-        Text(
-          title.toUpperCase(),
-          style: GoogleFonts.inter(
+  Widget _buildLangBtn(String code, String label) {
+    bool isSelected = _currentLang == code;
+    return GestureDetector(
+      onTap: () => _toggleLanguage(code),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(100),
+          border: Border.all(color: isSelected ? primaryColor : Colors.grey[300]!),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.poppins(
+            color: isSelected ? Colors.white : Colors.grey[600],
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             fontSize: 12,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.2,
-            color: iconColor,
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildCard({required Widget child, required Color color, required Color borderColor}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor),
       ),
-      child: child,
     );
   }
 
-  Widget _buildInfoCard(IconData icon, String label, String desc, {String? code}) {
+  Widget _buildHelpCard({
+    required IconData icon,
+    required String title,
+    required String desc,
+    required Color iconBg,
+    required Color iconColor,
+  }) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1e293b) : const Color(0xFFF9FAFB),
+        color: isDark ? const Color(0xFF1F2937) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: isDark ? Colors.grey[800]! : Colors.grey[100]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.grey[400], size: 20),
-          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, color: iconColor),
+          ),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label.toUpperCase(), style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey)),
-                const SizedBox(height: 4),
-                Text(desc, style: GoogleFonts.inter(fontSize: 13, color: isDark ? Colors.grey[300] : Colors.black87)),
-                if (code != null) ...[
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.black.withValues(alpha: 0.3) : Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: isDark ? Colors.grey[700]! : Colors.grey[200]!),
-                    ),
-                    child: Text(code, style: GoogleFonts.firaCode(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFFc026d3))),
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
-                ]
+                ),
+                Text(
+                  desc,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.grey[500],
+                  ),
+                ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildContactLink(IconData icon, String title, String value, Color iconColor, VoidCallback onTap) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1e293b) : const Color(0xFFF9FAFB),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.transparent),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[800] : Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 5)],
-              ),
-              child: Icon(icon, color: iconColor, size: 20),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: GoogleFonts.inter(fontSize: 11, color: Colors.grey)),
-                  Text(value, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white : Colors.black87), overflow: TextOverflow.ellipsis),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey),
-          ],
-        ),
       ),
     );
   }
