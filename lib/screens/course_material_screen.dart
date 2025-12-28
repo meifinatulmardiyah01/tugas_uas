@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/material_content_screen.dart';
 import 'package:uas_saya/screens/quiz_screen.dart';
+import 'package:uas_saya/screens/meeting_detail_screen.dart';
 
 class CourseMaterialScreen extends StatefulWidget {
   final Map<String, dynamic> course;
@@ -226,7 +227,7 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    ...meetings.map((meeting) => _buildMeetingCard(meeting, isDark)),
+                    ...meetings.map((meeting) => _buildMeetingCard(meeting, isDark, context)),
                   ],
                 )
               : ListView(
@@ -241,75 +242,85 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
     );
   }
 
-  Widget _buildMeetingCard(dynamic meeting, bool isDark) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+  Widget _buildMeetingCard(dynamic meeting, bool isDark, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MeetingDetailScreen(meeting: meeting),
           ),
-        ],
-        border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.transparent,
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: isDark ? Colors.grey[800]! : Colors.transparent,
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF5D9CEC),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  meeting['meetingNumber'].toUpperCase(),
-                  style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF5D9CEC),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    meeting['meetingNumber'].toUpperCase(),
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1,
+                    ),
                   ),
                 ),
-              ),
-              Icon(
-                meeting['isCompleted'] 
-                    ? Icons.check_circle_rounded 
-                    : Icons.radio_button_checked_rounded,
-                color: meeting['isCompleted'] ? const Color(0xFF22C55E) : Colors.grey[400],
-                size: 20,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            meeting['title'],
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black,
-              height: 1.3,
+                Icon(
+                  meeting['isCompleted'] 
+                      ? Icons.check_circle_rounded 
+                      : Icons.radio_button_checked_rounded,
+                  color: meeting['isCompleted'] ? const Color(0xFF22C55E) : Colors.grey[400],
+                  size: 20,
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            meeting['summary'],
-            style: GoogleFonts.inter(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+            const SizedBox(height: 12),
+            Text(
+              meeting['title'],
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+                height: 1.3,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              meeting['summary'],
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
