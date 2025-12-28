@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/material_content_screen.dart';
 import 'package:uas_saya/screens/quiz_screen.dart';
 import 'package:uas_saya/screens/meeting_detail_screen.dart';
+import 'package:uas_saya/screens/assignment_detail_screen.dart'; // Import this
 
 class CourseMaterialScreen extends StatefulWidget {
   final Map<String, dynamic> course;
@@ -507,13 +508,23 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
             ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Membuka ${item['title']}...'),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: const Color(0xFFE91E63),
-            ),
-          );
+          // If task, go to AssignmentDetailScreen
+          if (item['type'] == 'Tugas') {
+             Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AssignmentDetailScreen(),
+              ),
+            );
+          } else {
+             ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Membuka ${item['title']}...'),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: const Color(0xFFE91E63),
+              ),
+            );
+          }
         }
       },
       child: Container(

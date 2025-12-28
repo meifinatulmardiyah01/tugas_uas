@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/quiz_screen.dart';
+import 'package:uas_saya/screens/assignment_detail_screen.dart';
 
 class ConceptDetailScreen extends StatefulWidget {
   const ConceptDetailScreen({super.key});
@@ -255,9 +256,10 @@ class _ConceptDetailScreenState extends State<ConceptDetailScreen> {
           icon: Icons.description,
           iconColor: secondaryColor,
           onTap: () {
-             ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Detail tugas akan segera hadir')),
-              );
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AssignmentDetailScreen()),
+            );
           },
         ),
         const SizedBox(height: 80),
