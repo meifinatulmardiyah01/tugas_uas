@@ -108,7 +108,7 @@ class _HelpScreenState extends State<HelpScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 40),
-                          const Icon(Icons.help_outline_rounded, size: 64, color: Colors.white),
+                          const Icon(Icons.support_agent_rounded, size: 64, color: Colors.white),
                           const SizedBox(height: 16),
                           Text(
                             text['title']!,
@@ -136,9 +136,9 @@ class _HelpScreenState extends State<HelpScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildLangBtn('ID', 'Indonesia'),
+                       _buildLangBtn('ID', 'Indonesia', 'https://flagcdn.com/w40/id.png'),
                       const SizedBox(width: 12),
-                      _buildLangBtn('EN', 'English'),
+                      _buildLangBtn('EN', 'English', 'https://flagcdn.com/w40/gb.png'),
                     ],
                   ),
                   const SizedBox(height: 32),
@@ -242,7 +242,7 @@ class _HelpScreenState extends State<HelpScreen> {
     );
   }
 
-  Widget _buildLangBtn(String code, String label) {
+  Widget _buildLangBtn(String code, String label, String flagUrl) {
     bool isSelected = _currentLang == code;
     return GestureDetector(
       onTap: () => _toggleLanguage(code),
@@ -253,13 +253,27 @@ class _HelpScreenState extends State<HelpScreen> {
           borderRadius: BorderRadius.circular(100),
           border: Border.all(color: isSelected ? primaryColor : Colors.grey[300]!),
         ),
-        child: Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: isSelected ? Colors.white : Colors.grey[600],
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            fontSize: 12,
-          ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: Image.network(
+                flagUrl,
+                width: 20,
+                height: 15,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: isSelected ? Colors.white : Colors.grey[600],
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ),
       ),
     );

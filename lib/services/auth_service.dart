@@ -98,6 +98,44 @@ class AuthService {
           ],
         },
       ],
+      'meetings': [
+        {
+          'title': '01 - Pengantar User Interface Design',
+          'meetingNumber': 'Pertemuan 1',
+          'summary': '3 URIs, 2 Files, 3 Interactive Content',
+          'isCompleted': false,
+        },
+        {
+          'title': '02 - Konsep User Interface Design',
+          'meetingNumber': 'Pertemuan 2',
+          'summary': '2 URIs, 1 Kuis, 3 Files, 1 Tugas',
+          'isCompleted': true,
+        },
+        {
+          'title': '03 - Interaksi pada User Interface Design',
+          'meetingNumber': 'Pertemuan 3',
+          'summary': '3 URIs, 2 Files, 3 Interactive Content',
+          'isCompleted': true,
+        },
+        {
+          'title': '04 - Ethnographic Observation',
+          'meetingNumber': 'Pertemuan 4',
+          'summary': '3 URIs, 2 Files, 3 Interactive Content',
+          'isCompleted': true,
+        },
+        {
+          'title': '05 - UID Testing',
+          'meetingNumber': 'Pertemuan 5',
+          'summary': '3 URIs, 2 Files, 3 Interactive Content',
+          'isCompleted': true,
+        },
+        {
+          'title': '06 - Assessment 1',
+          'meetingNumber': 'Pertemuan 6',
+          'summary': '3 URIs, 2 Files, 3 Interactive Content',
+          'isCompleted': true,
+        },
+      ],
     },
     {
       'title': 'Kewarganegaraan',
@@ -251,7 +289,7 @@ class AuthService {
       'author': 'By Admin Celoe',
       'date': DateTime.now().subtract(const Duration(days: 2, hours: 5)),
       'icon': 'campaign',
-      'imageUrl': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCi5rhcANWNzkBTeFoozeYLmBaFUioSf1K6aIHyC4sgRKNCa-_BHIyZu0iOa-soA_bxj5HS-hpdSEfLOmzGhmr5RR4_6oOFfBaGcpISLqXJMvnpNSRocJrIRxTuTLTTlrQsdpudn0SO_pHqYWNLTr6uhsALO2WnOsPIivxJdBSAgWKAcP9Gi_FjVByL0kdepHC61dnP2UsDKlXvb_2H-UBVsuTDZK8-3kwiMHU0xAZFPvrZXjpAs0Y8mKirnq-je3WAE2udG0sVqjuA',
+      'imageUrl': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1000',
       'content': 'Diinformasikan kepada seluruh pengguna LMS, kami dari tim CeLOE akan melakukan maintenance pada tanggal 12 Juni 2021, untuk meningkatkan layanan server dalam menghadapi ujian akhir semester (UAS).\n\nDengan adanya kegiatan maintenance tersebut maka situs LMS (lms.telkomuniversity.ac.id) tidak dapat diakses mulai pukul 00.00 s/d 06.00 WIB.\n\nDemikian informasi ini kami sampaikan, mohon maaf atas ketidaknyamanannya.',
     },
     {

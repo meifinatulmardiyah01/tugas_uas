@@ -157,6 +157,28 @@ class AnnouncementDetailScreen extends StatelessWidget {
                         textAlign: TextAlign.justify,
                       ),
                       const SizedBox(height: 32),
+                      const SizedBox(height: 32),
+                      
+                      // Fitur Terkait Section (3 features)
+                      Text(
+                        'Fitur Terkait',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildFeatureItem('LMS Mobile', 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=200', isDark),
+                          _buildFeatureItem('Kuis Online', 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&q=80&w=200', isDark),
+                          _buildFeatureItem('E-Sertifikat', 'https://images.unsplash.com/photo-1523240715639-99a2f050b10b?auto=format&fit=crop&q=80&w=200', isDark),
+                        ],
+                      ),
+                      
+                      const SizedBox(height: 32),
                       Row(
                         children: [
                           const SizedBox(width: 4),
@@ -229,6 +251,40 @@ class AnnouncementDetailScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFeatureItem(String label, String imageUrl, bool isDark) {
+    return Column(
+      children: [
+        Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            image: DecorationImage(
+              image: NetworkImage(imageUrl),
+              fit: BoxFit.cover,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white70 : Colors.black54,
+          ),
+        ),
+      ],
     );
   }
 }

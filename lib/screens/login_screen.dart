@@ -235,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Text(
-                      'Bantuan ?',
+                      'Pusat Bantuan',
                       style: GoogleFonts.poppins(
                         color: fuchsia600,
                         fontWeight: FontWeight.w500,
