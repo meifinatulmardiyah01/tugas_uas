@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_saya/screens/material_detail_screen.dart';
 
 class MaterialContentScreen extends StatelessWidget {
   final String categoryTitle;
@@ -59,8 +60,13 @@ class MaterialContentScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Membuka ${material['title']}...')),
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+               // In a real app, passing 'material' id would load specific content.
+               // For this task, we load the "Pengantar UI Design" detail screen as requested.
+              builder: (context) => const MaterialDetailScreen(),
+            ),
           );
         },
         borderRadius: BorderRadius.circular(16),
