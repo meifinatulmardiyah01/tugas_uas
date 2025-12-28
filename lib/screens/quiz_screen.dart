@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 
 class QuizScreen extends StatefulWidget {
   final String title;
@@ -13,308 +13,364 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
+  // Theme Colors from HTML
+  final Color primaryColor = const Color(0xFFDB2777); // Pink 600
+  final Color primaryDark = const Color(0xFFBE185D); // Pink 700
+  final Color backgroundLight = const Color(0xFFF3F4F6); // Gray 100
+  final Color backgroundDark = const Color(0xFF111827); // Gray 900
+  final Color surfaceLight = Colors.white;
+  final Color surfaceDark = const Color(0xFF1F2937); // Gray 800
+
   int _currentIndex = 0;
-  int _score = 0;
-  int? _selectedOption;
-  bool _isAnswered = false;
-  bool _showResult = false;
+  // Store selected answer for each question index
+  final Map<int, int> _selectedAnswers = {}; 
+  
+  // Timer
+  Timer? _timer;
+  int _remainingSeconds = 900; // 15:00 minutes
 
-  void _handleOptionSelect(int index) {
-    if (_isAnswered) return;
-    setState(() {
-      _selectedOption = index;
-      _isAnswered = true;
-      if (index == widget.questions[_currentIndex]['correctAnswer']) {
-        _score++;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
 
-    // Auto-advance after delay
-    Future.delayed(const Duration(seconds: 1), () {
-      if (_currentIndex < widget.questions.length - 1) {
-        setState(() {
-          _currentIndex++;
-          _selectedOption = null;
-          _isAnswered = false;
-        });
-      } else {
-        setState(() {
-          _showResult = true;
-        });
-      }
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingSeconds > 0) {
+          _remainingSeconds--;
+        } else {
+          _timer?.cancel();
+          _finishQuiz();
+        }
+      });
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryGradient = const LinearGradient(
-      colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
-    );
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
-    if (_showResult) return _buildResultView(isDark, primaryGradient);
+  String _formatTime(int totalSeconds) {
+    int minutes = totalSeconds ~/ 60;
+    int seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')} : ${seconds.toString().padLeft(2, '0')}';
+  }
 
-    final question = widget.questions[_currentIndex];
-    double progress = (_currentIndex + 1) / widget.questions.length;
+  void _selectOption(int index) {
+    setState(() {
+      _selectedAnswers[_currentIndex] = index;
+    });
+  }
 
-    return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB),
-      appBar: AppBar(
-        title: Text(widget.title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: isDark ? Colors.white : Colors.black87,
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          // Progress Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Question ${_currentIndex + 1} of ${widget.questions.length}',
-                      style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
-                    ),
-                    Text(
-                      '${(progress * 100).toInt()}%',
-                      style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFFEC4899)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 6,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFEC4899)),
-                  ),
-                ),
-              ],
-            ),
-          ),
+  void _nextQuestion() {
+    if (_currentIndex < widget.questions.length - 1) {
+      setState(() {
+        _currentIndex++;
+      });
+    } else {
+      _finishQuiz();
+    }
+  }
 
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1F2937) : Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Text(
-                      question['text'],
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ).animate().fadeIn().slideY(begin: 0.1, end: 0),
+  void _jumpToQuestion(int index) {
+    // Only allow jumping if the index is within range. 
+    // In a real app we might restricting jumping ahead, but HTML UI shows full grid.
+    if (index < widget.questions.length) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
 
-                  const SizedBox(height: 32),
-
-                  ...List.generate(
-                    (question['options'] as List).length,
-                    (index) => _buildOptionBtn(index, question['options'][index], question['correctAnswer'], isDark),
-                  ),
-                ],
-              ),
-            ),
+  void _finishQuiz() {
+    // Calculate Score
+    int score = 0;
+    for (int i = 0; i < widget.questions.length; i++) {
+        if (_selectedAnswers[i] == widget.questions[i]['correctAnswer']) {
+            score++;
+        }
+    }
+    
+    // Show Result Dialog or Navigate
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Quiz Completed'),
+        content: Text('Your score: $score / ${widget.questions.length}'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx); // Close Dialog
+              Navigator.pop(context); // Close Quiz Screen
+            },
+            child: const Text('Finish'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOptionBtn(int index, String text, int correctIndex, bool isDark) {
-    bool isSelected = _selectedOption == index;
-    bool isCorrect = index == correctIndex;
-    
-    Color borderCol = Colors.transparent;
-    Color bgCol = isDark ? const Color(0xFF1F2937) : Colors.white;
-    IconData? icon;
-
-    if (_isAnswered) {
-      if (isCorrect) {
-        borderCol = Colors.green;
-        bgCol = Colors.green.withValues(alpha: 0.1);
-        icon = Icons.check_circle_rounded;
-      } else if (isSelected) {
-        borderCol = Colors.red;
-        bgCol = Colors.red.withValues(alpha: 0.1);
-        icon = Icons.cancel_rounded;
-      }
-    } else if (isSelected) {
-      borderCol = const Color(0xFF8B5CF6);
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: InkWell(
-        onTap: () => _handleOptionSelect(index),
-        borderRadius: BorderRadius.circular(16),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: bgCol,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: borderCol, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
-                blurRadius: 5,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected ? borderCol : Colors.grey.withValues(alpha: 0.1),
-                ),
-                child: Center(
-                  child: Text(
-                    String.fromCharCode(65 + index),
-                    style: GoogleFonts.poppins(
-                      color: isSelected ? Colors.white : Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  text,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: isDark ? Colors.white : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  ),
-                ),
-              ),
-              if (icon != null) Icon(icon, color: borderCol),
-            ],
-          ),
-        ),
-      ),
-    ).animate().fadeIn(delay: (index * 100).ms).slideX(begin: 0.2, end: 0);
-  }
-
-  Widget _buildResultView(bool isDark, Gradient gradient) {
-    double scorePct = _score / widget.questions.length;
+  @override
+  Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final currentQuestion = widget.questions[_currentIndex];
     
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.emoji_events_rounded, size: 120, color: Colors.amber)
-                .animate(onPlay: (c) => c.repeat())
-                .shimmer(duration: 2.seconds)
-                .shake(hz: 4, curve: Curves.easeInOut),
-            
-            const SizedBox(height: 32),
-            
-            Text(
-              'Quiz Completed!',
-              style: GoogleFonts.poppins(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-            ),
-            
-            const SizedBox(height: 12),
-            
-            Text(
-              'You scored',
-              style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
-            ),
-            
-            const SizedBox(height: 8),
-            
-            Text(
-              '$_score / ${widget.questions.length}',
-              style: GoogleFonts.poppins(
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFFEC4899),
-              ),
-            ),
-            
-            const SizedBox(height: 40),
-            
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1F2937) : Colors.white,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    scorePct >= 0.7 ? 'Kerja Bagus! 🎉' : 'Terus Belajar! 💪',
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 18, color: isDark ? Colors.white : Colors.black87),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Anda telah menyelesaikan kuis untuk materi ini.',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 60),
-            
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC026D3),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  elevation: 8,
-                  shadowColor: const Color(0xFFC026D3).withValues(alpha: 0.4),
+      backgroundColor: isDark ? backgroundDark : backgroundLight,
+      body: SafeArea(
+        child: Container(
+          decoration: BoxDecoration(
+             color: isDark ? const Color(0xFF000000) : Colors.white, // Inner container bg like HTML
+             borderRadius: BorderRadius.circular(24),
+             boxShadow: [
+               BoxShadow(
+                 color: Colors.black.withOpacity(0.2),
+                 blurRadius: 20,
+                 offset: const Offset(0, 10),
+               )
+             ]
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0), // Full screen in mobile usually, adapted from HTML layout
+          child: Column(
+            children: [
+              // Header
+              Container(
+                padding: const EdgeInsets.only(top: 24, bottom: 24, left: 24, right: 24),
+                color: primaryColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.timer, color: Colors.white, size: 16),
+                          const SizedBox(width: 8),
+                          Text(
+                            _formatTime(_remainingSeconds),
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFeatures: [const FontFeature.tabularFigures()],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                child: Text('Selesai', style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
               ),
-            ),
-          ],
+
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    // Question Grid
+                    Container(
+                        margin: const EdgeInsets.only(bottom: 32),
+                        child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: List.generate(
+                                // Use provided question count or default to 15 bubbles as per HTML design if fewer questions
+                                // But logicaly should match questions length. HTML shows 15.
+                                widget.questions.length > 15 ? widget.questions.length : 15,
+                                (index) => _buildGridNumber(index, isDark)
+                            ),
+                        ),
+                    ),
+                    
+                    // Question Section
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Soal Nomor ${_currentIndex + 1} / ${widget.questions.length}',
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.grey[900],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            currentQuestion['text'],
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: isDark ? const Color(0xFFE5E7EB) : const Color(0xFF374151),
+                              height: 1.6,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Options
+                    Column(
+                        children: List.generate(
+                            (currentQuestion['options'] as List).length,
+                            (index) => _buildOption(index, currentQuestion['options'][index], isDark),
+                        ),
+                    ),
+                    
+                    const SizedBox(height: 32),
+
+                    // Next Button
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton(
+                            onPressed: _nextQuestion,
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                                foregroundColor: isDark ? Colors.white : const Color(0xFF1F2937),
+                                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                elevation: 0,
+                            ),
+                            child: Text(
+                                _currentIndex == widget.questions.length - 1 ? 'Selesai' : 'Soal Selanjutnya',
+                                style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                            ),
+                        ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildGridNumber(int index, bool isDark) {
+    bool isCurrent = index == _currentIndex;
+    // Check if this index exists in questions
+    bool isActive = index < widget.questions.length;
+    bool isAnswered = isActive && _selectedAnswers.containsKey(index);
+    
+    // Default appearance for inactive mock bubbles (if any)
+    Color bgColor = isDark ? Colors.transparent : Colors.transparent;
+    Color textColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    Color borderColor = isDark ? const Color(0xFF4B5563) : const Color(0xFFD1D5DB);
+
+    if (isActive) {
+        if (isCurrent) {
+            bgColor = primaryColor;
+            textColor = Colors.white;
+            borderColor = primaryColor;
+        } else if (isAnswered) {
+             // Maybe Green to show answered? HTML just shows one active.
+             // I'll stick to simple outline for non-current, but maybe filled if answered?
+             // HTML shows button 1 active (Pink filled), others outline.
+             bgColor = Colors.transparent;
+             textColor = isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+             borderColor = isDark ? const Color(0xFF4B5563) : const Color(0xFFD1D5DB);
+        }
+    } else {
+        // Disabled style
+    }
+
+    return GestureDetector(
+      onTap: isActive ? () => _jumpToQuestion(index) : null,
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+           color: bgColor,
+           shape: BoxShape.circle,
+           border: Border.all(color: borderColor, width: isCurrent ? 0 : 1.5),
+           boxShadow: isCurrent ? [
+               BoxShadow(
+                   color: primaryColor.withOpacity(0.4),
+                   blurRadius: 6,
+                   offset: const Offset(0, 2),
+               )
+           ] : [],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+           '${index + 1}',
+           style: GoogleFonts.poppins(
+               fontSize: 12,
+               fontWeight: FontWeight.bold,
+               color: textColor,
+           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOption(int index, String text, bool isDark) {
+      int? selected = _selectedAnswers[_currentIndex];
+      bool isSelected = selected == index;
+      
+      return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: GestureDetector(
+              onTap: () => _selectOption(index),
+              child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      color: isSelected ? primaryColor : (isDark ? const Color(0xFF1F2937) : const Color(0xFFF3F4F6)),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: isSelected ? [
+                          BoxShadow(
+                              color: primaryColor.withOpacity(0.4),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                          )
+                      ] : [],
+                  ),
+                  child: Row(
+                      children: [
+                          Text(
+                              String.fromCharCode(65 + index) + '.',
+                              style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: isSelected ? Colors.white : (isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280)),
+                              ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                              child: Text(
+                                  text,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: isSelected ? Colors.white : (isDark ? Colors.white : const Color(0xFF1F2937)),
+                                  ),
+                              ),
+                          ),
+                      ],
+                  ),
+              ),
+          ),
+      );
   }
 }
