@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/home_screen.dart';
 import 'package:uas_saya/screens/course_list_screen.dart';
 import 'package:uas_saya/screens/notification_screen.dart';
-import 'package:uas_saya/screens/concept_detail_screen.dart';
+
+// Removed ConceptDetailScreen import as FAB is removed
 
 class MainWrapper extends StatefulWidget {
   const MainWrapper({super.key});
@@ -24,11 +25,6 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryGradient = const LinearGradient(
-      colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    );
 
     return Scaffold(
       body: Stack(
@@ -41,55 +37,48 @@ class _MainWrapperState extends State<MainWrapper> {
             right: 0,
             bottom: 0,
             child: Container(
-              height: 90,
               decoration: BoxDecoration(
-                gradient: primaryGradient,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                color: isDark ? const Color(0xFF1F2937) : Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB),
+                    width: 1,
+                  ),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.15),
-                    blurRadius: 20,
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
                 ],
               ),
               child: SafeArea(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavItem(0, Icons.home, 'Home'),
-                    _buildNavItem(1, Icons.school, 'Kelas Saya'),
-                    _buildNavItem(2, Icons.notifications, 'Notifikasi', hasBadge: true),
-                  ],
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildNavItem(0, Icons.home_rounded, 'Home', isDark),
+                      _buildNavItem(1, Icons.school_rounded, 'Kelas Saya', isDark),
+                      _buildNavItem(2, Icons.notifications_rounded, 'Notifikasi', isDark),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: _selectedIndex == 1
-          ? Container(
-              margin: const EdgeInsets.only(bottom: 100), // Adjust to be above bottom bar
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ConceptDetailScreen()),
-                  );
-                },
-                backgroundColor: const Color(0xFF7C3AED),
-                child: const Icon(Icons.school, color: Colors.white),
-              ),
-            )
-          : null,
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label, {bool hasBadge = false}) {
+  Widget _buildNavItem(int index, IconData icon, String label, bool isDark) {
     bool isActive = _selectedIndex == index;
+    // HTML uses violet-600 (light) / pink-400 (dark)
+    final effectiveActiveColor = isDark ? const Color(0xFFF472B6) : const Color(0xFF7C3AED);
+    final inactiveColor = isDark ? Colors.grey[600] : Colors.grey[400];
     
     return GestureDetector(
       onTap: () => setState(() => _selectedIndex = index),
@@ -99,52 +88,20 @@ class _MainWrapperState extends State<MainWrapper> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Icon(
-                  icon,
-                  color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
-                  size: 28,
-                  shadows: isActive ? [
-                    const Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2))
-                  ] : null,
-                ),
-                if (hasBadge)
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow[400],
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFC026D3), width: 1.5),
-                      ),
-                    ),
-                  ),
-              ],
+            Icon(
+              icon,
+              color: isActive ? effectiveActiveColor : inactiveColor,
+              size: 28,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: GoogleFonts.poppins(
                 fontSize: 10,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? Colors.white : Colors.white.withOpacity(0.6),
+                fontWeight: FontWeight.w500,
+                color: isActive ? effectiveActiveColor : inactiveColor,
               ),
             ),
-            if (isActive)
-              Container(
-                margin: const EdgeInsets.only(top: 2),
-                width: 4,
-                height: 4,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-              ),
           ],
         ),
       ),
