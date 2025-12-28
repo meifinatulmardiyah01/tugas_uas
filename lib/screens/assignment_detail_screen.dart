@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_saya/screens/file_upload_screen.dart'; // Import FileUploadScreen
 
 class AssignmentDetailScreen extends StatelessWidget {
   const AssignmentDetailScreen({super.key});
@@ -101,8 +102,9 @@ class AssignmentDetailScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                   ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Navigating to file upload...')),
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(builder: (context) => const FileUploadScreen()),
                    );
                 },
                 icon: const Icon(Icons.add_circle_outline),
