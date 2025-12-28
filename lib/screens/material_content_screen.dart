@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/material_detail_screen.dart';
+import 'package:uas_saya/screens/video_player_screen.dart'; // Import VideoPlayerScreen
 
 class MaterialContentScreen extends StatelessWidget {
   final String categoryTitle;
@@ -60,14 +61,23 @@ class MaterialContentScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-               // In a real app, passing 'material' id would load specific content.
-               // For this task, we load the "Pengantar UI Design" detail screen as requested.
-              builder: (context) => const MaterialDetailScreen(),
-            ),
-          );
+          if (material['type'].toString().toLowerCase().contains('video')) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VideoPlayerScreen(
+                  title: material['title'],
+                ),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MaterialDetailScreen(),
+              ),
+            );
+          }
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(
