@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_saya/screens/quiz_review_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   final String title;
@@ -35,9 +36,7 @@ class _QuizScreenState extends State<QuizScreen> {
     _startTimer();
     
     // Simulate pre-filled answers 1-14 as per HTML design visualization "1-14 Green"
-    // In a real app we start empty, but to match the "Soal Nomor 3" visual where 1..2..etc are done:
-    // I will NOT forcefully fill them, but let the user fill. 
-    // However, ensure the visual style supports the filled state correctly.
+    // In a real app we start empty.
   }
 
   void _startTimer() {
@@ -98,28 +97,13 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _finishQuiz() {
-    int score = 0;
-    for (int i = 0; i < widget.questions.length; i++) {
-        if (_selectedAnswers[i] == widget.questions[i]['correctAnswer']) {
-            score++;
-        }
-    }
-    
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Quiz Completed'),
-        content: Text('Your score: $score / ${widget.questions.length}'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx); 
-              Navigator.pop(context); 
-            },
-            child: const Text('Finish'),
-          ),
-        ],
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizReviewScreen(
+            questions: widget.questions,
+            userAnswers: _selectedAnswers,
+        ),
       ),
     );
   }
