@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/material_content_screen.dart';
+import 'package:uas_saya/screens/quiz_screen.dart';
 
 class CourseMaterialScreen extends StatefulWidget {
   final Map<String, dynamic> course;
@@ -148,15 +149,32 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
                         onTap: () => setState(() => _activeTab = 1),
                         child: Container(
                           color: Colors.transparent,
-                          child: Center(
-                            child: Text(
-                              'Tugas Dan Kuis',
-                              style: GoogleFonts.inter(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF6B7280),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Text(
+                                'Tugas Dan Kuis',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: _activeTab == 1 ? FontWeight.bold : FontWeight.w500,
+                                  color: _activeTab == 1 
+                                      ? (isDark ? Colors.white : const Color(0xFF111827))
+                                      : const Color(0xFF6B7280),
+                                ),
                               ),
-                            ),
+                              if (_activeTab == 1)
+                                Positioned(
+                                  bottom: 0,
+                                  child: Container(
+                                    width: 100,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: isDark ? const Color(0xFFE5E7EB) : const Color(0xFF1F2937),
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
@@ -211,18 +229,9 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
                     ...meetings.map((meeting) => _buildMeetingCard(meeting, isDark)),
                   ],
                 )
-              : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.assignment_late_rounded, size: 64, color: Colors.grey.withValues(alpha: 0.3)),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Segera Hadir',
-                        style: GoogleFonts.poppins(color: Colors.grey, fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
+              : ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+                  children: _getAssignments().map((item) => _buildAssignmentCard(item, isDark)).toList(),
                 ),
           ),
         ],
@@ -430,6 +439,159 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
               ),
             ),
             Icon(Icons.arrow_forward_ios_rounded, size: 16, color: color.withValues(alpha: 0.5)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _getAssignments() {
+    return [
+      {
+        'type': 'Quiz',
+        'title': 'Quiz Review 01',
+        'deadline': '25 Februari 2021 23:59 WIB',
+        'status': 'completed',
+        'icon': Icons.quiz_rounded,
+        'questions': [
+          {'text': 'Prinsip utama UI Design adalah?', 'options': ['Estetika', 'Kegunaan', 'Warna', 'Animasi'], 'correctAnswer': 1},
+          {'text': 'Apa kepanjangan dari UI?', 'options': ['User Interest', 'User Interface', 'User Industry', 'User Information'], 'correctAnswer': 1},
+        ]
+      },
+      {
+        'type': 'Tugas',
+        'title': 'Tugas 01 - UID Android Mobile Game',
+        'deadline': '25 Februari 2021 23:59 WIB',
+        'status': 'unverified',
+        'icon': Icons.assignment_rounded,
+      },
+      {
+        'type': 'Pertemuan 3',
+        'title': 'Kuis - Assessment 2',
+        'deadline': '28 Februari 2021 23:59 WIB',
+        'status': 'completed',
+        'icon': Icons.quiz_rounded,
+        'questions': [
+          {'text': 'Apa itu UX?', 'options': ['User Experience', 'User Experiment', 'User X-factor', 'User Example'], 'correctAnswer': 0},
+          {'text': 'Manakah tool yang populer untuk UI/UX?', 'options': ['Excel', 'Figma', 'Word', 'PowerPoint'], 'correctAnswer': 1},
+        ]
+      },
+    ];
+  }
+
+  Widget _buildAssignmentCard(Map<String, dynamic> item, bool isDark) {
+    bool isQuiz = item['type'].toString().toLowerCase().contains('quiz') || item['type'].toString().toLowerCase().contains('kuis');
+    bool isCompleted = item['status'] == 'completed';
+
+    return GestureDetector(
+      onTap: () {
+        if (isQuiz && item['questions'] != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizScreen(
+                title: item['title'],
+                questions: List<Map<String, dynamic>>.from(item['questions']),
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Membuka ${item['title']}...'),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: const Color(0xFFE91E63),
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: isDark ? Colors.grey[800]! : Colors.grey[100]!,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE91E63), // Pink badge
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    item['type'].toUpperCase(),
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                Icon(
+                  isCompleted ? Icons.check_circle : Icons.verified_user,
+                  color: isCompleted ? const Color(0xFF10B981) : Colors.grey[300],
+                  size: 20,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF2D2D2D) : const Color(0xFFF3F4F6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    item['icon'],
+                    size: 28,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    item['title'],
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            const SizedBox(height: 12),
+            Text(
+              'Tenggat Waktu : ${item['deadline']}',
+              style: GoogleFonts.poppins(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+              ),
+            ),
           ],
         ),
       ),
