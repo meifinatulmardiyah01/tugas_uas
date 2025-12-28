@@ -13,8 +13,8 @@ class MeetingDetailScreen extends StatefulWidget {
 class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
   int _activeTab = 0; // 0 for Lampiran Materi, 1 for Tugas Dan Kuis
 
-  final Color primaryColor = const Color(0xFFD946EF);
-  final Color secondaryColor = const Color(0xFFA855F7);
+  final Color primaryColor = const Color(0xFFF54E5E);
+  final Color secondaryColor = const Color(0xFF7C3AED);
 
   @override
   Widget build(BuildContext context) {
@@ -230,17 +230,98 @@ class _MeetingDetailScreenState extends State<MeetingDetailScreen> {
   }
 
   Widget _buildAssignmentList(bool isDark) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.assignment_rounded, size: 64, color: Colors.grey.withValues(alpha: 0.2)),
-          const SizedBox(height: 16),
-          Text(
-            'Tidak ada tugas/kuis khusus',
-            style: GoogleFonts.poppins(color: Colors.grey, fontSize: 13),
-          ),
-        ],
+    const String emptyIllustration = 'https://cdni.iconscout.com/illustration/premium/thumb/sleeping-woman-illustration-download-in-svg-png-gif-file-formats--girl-nap-rest-relax-peaceful-activity-pack-leisure-illustrations-6497258.png';
+    final Color emptyPrimary = const Color(0xFFF54E5E);
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Illustration with Glow
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: emptyPrimary.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                Image.network(
+                  emptyIllustration,
+                  width: 280,
+                  height: 280,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.hotel_rounded,
+                    size: 100,
+                    color: emptyPrimary.withValues(alpha: 0.3),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 32),
+            
+            Text(
+              'Tidak Ada Tugas Dan Kuis Hari Ini',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+            
+            const SizedBox(height: 12),
+            
+            Text(
+              'Nikmati waktu luangmu atau pelajari kembali materi sebelumnya.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                color: Colors.grey,
+                height: 1.5,
+              ),
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Interaction Button
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Membuka Jadwal Besok...'),
+                    backgroundColor: Color(0xFFF54E5E),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: emptyPrimary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                elevation: 10,
+                shadowColor: emptyPrimary.withValues(alpha: 0.4),
+              ),
+              child: Text(
+                'Lihat Jadwal Besok',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
