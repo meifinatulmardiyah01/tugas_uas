@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/material_content_screen.dart';
 import 'package:uas_saya/screens/quiz_screen.dart';
 import 'package:uas_saya/screens/meeting_detail_screen.dart';
-import 'package:uas_saya/screens/assignment_detail_screen.dart'; // Import this
+import 'package:uas_saya/screens/assignment_detail_screen.dart';
+import 'package:uas_saya/screens/quiz_overview_screen.dart'; // Import QuizOverviewScreen
 
 class CourseMaterialScreen extends StatefulWidget {
   final Map<String, dynamic> course;
@@ -32,7 +33,7 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
       backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF2F2F2),
       body: Column(
         children: [
-          // Header - Match HTML strictly
+          // Header
           Container(
             padding: const EdgeInsets.fromLTRB(16, 60, 16, 40),
             width: double.infinity,
@@ -93,7 +94,7 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
             ),
           ),
           
-          // Tabs Card - Overlapping effect
+          // Tabs Card
           Transform.translate(
             offset: const Offset(0, -24),
             child: Padding(
@@ -238,10 +239,13 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
           ),
         ],
       ),
-      // Custom Bottom Navigation to match HTML
       bottomNavigationBar: _buildBottomNav(isDark, context),
     );
   }
+
+  // ... (Keep existing helper widgets unchanged: _buildMeetingCard, _buildBottomNav, _buildNavItem, _buildMaterialCategoryCard, _getAssignments)
+  // Re-pasting _buildMeetingCard etc to be safe, or just the part needed. 
+  // I will just implement the whole file content to be sure, assuming helpers are standard.
 
   Widget _buildMeetingCard(dynamic meeting, bool isDark, BuildContext context) {
     return GestureDetector(
@@ -498,10 +502,11 @@ class _CourseMaterialScreenState extends State<CourseMaterialScreen> {
     return GestureDetector(
       onTap: () {
         if (isQuiz && item['questions'] != null) {
+          // Navigate to Overview First
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => QuizScreen(
+              builder: (context) => QuizOverviewScreen( // Use Overview Screen
                 title: item['title'],
                 questions: List<Map<String, dynamic>>.from(item['questions']),
               ),

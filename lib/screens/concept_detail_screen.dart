@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uas_saya/screens/quiz_screen.dart';
 import 'package:uas_saya/screens/assignment_detail_screen.dart';
+import 'package:uas_saya/screens/quiz_overview_screen.dart'; // Import QuizOverviewScreen
 
 class ConceptDetailScreen extends StatefulWidget {
   const ConceptDetailScreen({super.key});
@@ -234,9 +235,9 @@ class _ConceptDetailScreenState extends State<ConceptDetailScreen> {
              Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const QuizScreen(
+                builder: (context) => QuizOverviewScreen( // Use Overview
                   title: 'Quiz Review 01',
-                  questions: [
+                  questions: const [
                     {'text': 'Prinsip utama UI Design adalah?', 'options': ['Estetika', 'Kegunaan', 'Warna', 'Animasi'], 'correctAnswer': 1},
                     {'text': 'Apa kepanjangan dari UI?', 'options': ['User Interest', 'User Interface', 'User Industry', 'User Information'], 'correctAnswer': 1},
                   ],
@@ -256,7 +257,7 @@ class _ConceptDetailScreenState extends State<ConceptDetailScreen> {
           icon: Icons.description,
           iconColor: secondaryColor,
           onTap: () {
-              Navigator.push(
+               Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const AssignmentDetailScreen()),
             );
