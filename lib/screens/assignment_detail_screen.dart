@@ -8,7 +8,7 @@ class AssignmentDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = const Color(0xFFBE185D); // Pink 700
+    final primaryColor = const Color(0xFF8B5CF6); // Purple 500
     final primaryLight = const Color(0xFFF472B6); // Pink 400
 
     return Scaffold(

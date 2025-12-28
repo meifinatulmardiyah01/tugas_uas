@@ -37,7 +37,7 @@ class MaterialDetailScreen extends StatelessWidget {
               height: 80,
               padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
               decoration: BoxDecoration(
-                color: const Color(0xFFDB2777), // Pink-600
+                color: const Color(0xFF8B5CF6), // Purple 500
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),

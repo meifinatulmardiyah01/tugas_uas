@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:uas_saya/screens/question_review_screen.dart';
 
 class QuizReviewScreen extends StatelessWidget {
   final List<Map<String, dynamic>> questions;
@@ -158,7 +159,16 @@ class QuizReviewScreen extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                       // Logic to highlight/show specific question if needed
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(
+                                           builder: (context) => QuestionReviewScreen(
+                                             initialIndex: index,
+                                             questions: questions,
+                                             userAnswers: userAnswers,
+                                           ),
+                                         ),
+                                       );
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.only(top: 16),

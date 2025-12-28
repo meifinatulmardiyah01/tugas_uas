@@ -13,8 +13,8 @@ class _FileUploadScreenState extends State<FileUploadScreen> {
   String? _selectedFile;
   bool _isUploading = false;
 
-  final Color primaryColor = const Color(0xFFB94646); // Reddish brown from HTML
-  final Color secondaryColor = const Color(0xFF3B82F6); // Blue
+  final Color primaryColor = const Color(0xFF8B5CF6); // Purple 500
+  final Color secondaryColor = const Color(0xFFDB2777); // Pink 600
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +150,7 @@ class _FileUploadScreenState extends State<FileUploadScreen> {
                                         'Ready to upload',
                                         style: GoogleFonts.poppins(
                                           fontSize: 12,
-                                          color: Colors.green,
+                                          color: secondaryColor,
                                         ),
                                       ),
                                     ] else ...[
